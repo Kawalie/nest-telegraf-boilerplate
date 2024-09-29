@@ -33,7 +33,7 @@ export class User {
   @UpdateDateColumn({ type: 'time with time zone' })
   updateAt: Date;
 
-  @Column({ default: true })
+  @Column({ default: false })
   registrated: boolean;
 
   @Column({ type: 'varchar', default: UserRole.USER })

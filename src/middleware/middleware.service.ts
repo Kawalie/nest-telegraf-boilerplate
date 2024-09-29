@@ -15,17 +15,18 @@ export class MiddlewareService {
     if (ctx.updateType == 'callback_query') {
       // @ts-ignore
       const text = `[${ctx.from.id}] [@${ctx.from.username}] ${ctx.callbackQuery.data}`;
-      this._logger.log(ctx);
+      this._logger.log(text);
     }
     if (ctx.updateType == 'message') {
       // @ts-ignore
       const text = `[${ctx.from.id}] [@${ctx.from.username}] ${ctx.message.text}`;
-      this._logger.log(ctx);
+      this._logger.log(text);
     }
     await next();
   };
 
   checkBan = async (ctx: Context, next: Function) => {
+    this._logger.debug(`check ban ${ctx.from.id}`);
     if (!ctx.from || ctx.from.is_bot) {
       return;
     }
@@ -35,6 +36,7 @@ export class MiddlewareService {
     }
     const user = await this.userService.findOneById(userId);
     if (user && user.banned) {
+      this._logger.debug(`user ${ctx.from.id} banned`);
       return;
     }
     await next();
@@ -42,11 +44,13 @@ export class MiddlewareService {
 
   createUser = async (ctx: Context, next: Function) => {
     const user = await this.userService.findOneById(ctx.from.id);
-
+    
     if (user && user.registrated == true) {
+      this._logger.debug(`user ${ctx.from.id} already registrated`);
       await next();
       return;
     } else {
+      this._logger.debug(`create user ${ctx.from.id}`);
       await this.userService.create({
         id: ctx.from.id,
         first_name: ctx.from.first_name,
@@ -54,10 +58,12 @@ export class MiddlewareService {
         registrated: true,
         role: UserRole.USER,
       });
+      await next();
     }
   };
 
   updateUser = async (ctx: Context, next: Function) => {
+    this._logger.debug(`update user ${ctx.from.id}`);
     await this.userService.updateOneById({
       id: ctx.from.id,
       first_name: ctx.from.first_name,

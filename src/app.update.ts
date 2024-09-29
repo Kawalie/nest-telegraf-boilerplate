@@ -12,7 +12,6 @@ export class AppUpdate {
 
   @Command('start')
   async start(@Ctx() ctx: Context) {
-    this.logger.log("start command");
     await ctx.reply('Hello World');
   }
 }

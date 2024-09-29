@@ -8,6 +8,7 @@ import configuration from './configuration/configuration';
 import { MiddlewareModule } from './middleware/middleware.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppUpdate } from './app.update';
 
 @Module({
   imports: [
@@ -78,6 +79,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       inject: [ConfigService],
     }),
   ],
-  providers: [],
+  providers: [AppUpdate],
 })
 export class AppModule {}
